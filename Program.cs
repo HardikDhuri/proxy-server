@@ -25,19 +25,18 @@ static async Task HandleClientAsync(TcpClient client)
         byte[] buffer = new byte[4096];
         int bytesRead = await clientStream.ReadAsync(buffer, 0, buffer.Length);
         string request = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-        foreach (var line in request.Split("\r\n"))
-        {
-            Console.WriteLine(line);
-        }
 
         string targetHost = GetHostFromRequest(request);
-        
         
         using (TcpClient targetClient = new TcpClient())
         {
             await targetClient.ConnectAsync(targetHost, 80);
             await using (NetworkStream targetStream = targetClient.GetStream())
             {
+                IPEndPoint clientEndpoint = (IPEndPoint)client.Client.RemoteEndPoint!;
+                string clientIpAddress = clientEndpoint.Address.ToString();
+                int clientPort = clientEndpoint.Port;
+                Console.WriteLine("Request made. Target: {0}:{1} Client: {2}:{3}", targetHost, 80, clientIpAddress, clientPort);
                 await targetStream.WriteAsync(buffer, 0, bytesRead);
                 await targetStream.FlushAsync();
 
