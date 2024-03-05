@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 
-Console.WriteLine("Welcome to Hardik's Firewall Network///");
+Console.WriteLine("Welcome to Hardik's Firewall Network!");
 
 const int proxyPort = 8989;
 TcpListener listener = new(IPAddress.Any, proxyPort);
